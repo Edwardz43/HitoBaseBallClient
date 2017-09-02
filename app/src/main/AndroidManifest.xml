@@ -20,7 +20,21 @@
         </activity>
         <activity android:name=".ManageTeamActivity" />
         <activity android:name=".CreateTeamActivity" />
-        <activity android:name=".ManageGameActivity"></activity>
+        <activity android:name=".ManageGameActivity" />
+
+        <service
+            android:name=".MyIntentService"
+            android:exported="false"
+            />
+
+        <receiver
+            android:name=".MyReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
