@@ -30,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
         super.finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(myReceiver);
+        super.onDestroy();
+    }
+
     public void start(View view){
         Intent it = new Intent(this, MyIntentService.class);
         it.putExtra("option", "0");

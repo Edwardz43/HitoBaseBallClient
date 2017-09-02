@@ -71,8 +71,8 @@ public class ManageTeamActivity extends AppCompatActivity {
     }
 
     @Override
-    public void finish() {
+    protected void onDestroy() {
         unregisterReceiver(myReceiver);
-        super.finish();
+        super.onDestroy();
     }
 }

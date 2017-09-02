@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -20,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 public class RosterFragment extends Fragment {
-    private ListView myList, oppList;
+    private ExpandableListView myList, oppList;
     private List<Map<String,String>> data;
     private String[] from = {"title"};
     private int[] to = {R.id.item_title};
-    private SimpleAdapter adapter;
+    private ExpandableListAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,6 +34,7 @@ public class RosterFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_roster, container, false);
         myList = view.findViewById(R.id.my_roster);
         oppList = view.findViewById(R.id.opp_roster);
+        //adapter = new MyExpandableListAdapter(getContext());
         initList();
         return view;
     }
@@ -46,7 +49,7 @@ public class RosterFragment extends Fragment {
             data.add(d);
             //Log.i("brad", "player : " + players.get(i));
         }
-        adapter = new SimpleAdapter(getContext(), data, R.layout.layout_roster, from, to);
+
         myList.setAdapter(adapter);
         oppList.setAdapter(adapter);
 
