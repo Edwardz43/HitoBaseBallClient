@@ -43,7 +43,9 @@ public class MyIntentService extends IntentService {
                 break;
             case "1":
                 target="ManageTeam";
-                option = "1&team=" + intent.getStringExtra("team");
+                String home = intent.getStringExtra("home");
+                String opp = intent.getStringExtra("opp");
+                option = "1&home=" + home + "&opp=" + opp;
                 break;
         }
         ArrayList data = getData(option);

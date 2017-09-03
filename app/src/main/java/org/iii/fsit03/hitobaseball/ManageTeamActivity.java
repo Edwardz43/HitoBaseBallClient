@@ -2,6 +2,7 @@ package org.iii.fsit03.hitobaseball;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -21,12 +22,13 @@ import java.util.Map;
 
 
 public class ManageTeamActivity extends AppCompatActivity {
-    private ListView list;
+    private ListView list_my, list_opp;
     private List<Map<String, String>> data;
     private String[] from = {"title"};
     private int[] to = {R.id.item_title};
     private SimpleAdapter adapter;
     private ArrayList teams;
+    private Map<String, String> team_name;
     public MyReceiver myReceiver;
     //private int removeIndex = -1;
 
@@ -34,7 +36,9 @@ public class ManageTeamActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_team);
-        list = (ListView) findViewById(R.id.list);
+        list_my = (ListView) findViewById(R.id.list);
+        list_opp = (ListView) findViewById(R.id.list2);
+        team_name = new HashMap<>();
         initList();
         myReceiver = new MyReceiver();
         IntentFilter filter = new IntentFilter("ManageTeam");
@@ -52,22 +56,43 @@ public class ManageTeamActivity extends AppCompatActivity {
         }
 
         adapter = new SimpleAdapter(ManageTeamActivity.this, data, R.layout.layout_item, from, to);
-        list.setAdapter(adapter);
+        list_my.setAdapter(adapter);
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        list_my.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent it = new Intent(ManageTeamActivity.this, MyIntentService.class);
-                it.putExtra("option", "1");
-                it.putExtra("team", ""+teams.get(i));
-                startService(it);
+                for(int n = 0; n < list_my.getChildCount(); n ++){
+                    list_my.getChildAt(n).setBackgroundColor(Color.BLACK);
+                }
+                team_name.put("home", ""+teams.get(i));
+                list_my.getChildAt(i).setBackgroundColor(Color.BLUE);
+                adapter.notifyDataSetChanged();
+                Log.i("brad", team_name.get("home"));
+            }
+        });
+
+        list_opp.setAdapter(adapter);
+
+        list_opp.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                for(int n = 0; n < list_my.getChildCount(); n ++){
+                    list_opp.getChildAt(n).setBackgroundColor(Color.BLACK);
+                }
+                team_name.put("opp", ""+teams.get(i));
+                list_opp.getChildAt(i).setBackgroundColor(Color.BLUE);
+                adapter.notifyDataSetChanged();
+                Log.i("brad", team_name.get("opp"));
             }
         });
     }
 
     public void createTeam(View view){
-        Intent it = new Intent(this, CreateTeamActivity.class);
-        startActivity(it);
+        Intent it = new Intent(this, MyIntentService.class);
+        it.putExtra("option", "1");
+        it.putExtra("home", team_name.get("home"));
+        it.putExtra("opp", team_name.get("opp"));
+        startService(it);
     }
 
     @Override

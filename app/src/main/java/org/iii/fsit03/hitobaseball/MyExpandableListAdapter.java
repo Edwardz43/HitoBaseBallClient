@@ -2,15 +2,17 @@ package org.iii.fsit03.hitobaseball;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by edlo on 2017/9/2.
@@ -18,80 +20,85 @@ import java.util.List;
 
 public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
-    private Context mContext;
-    private List<String> mListDataHeader;
-    private HashMap<String, List<String>> mListDataChild;
+    private LayoutInflater context;
+    private Map<String, List<String>> dataCollection;
+    private Map<String, List<String>> childItems, parentTitle;
 
-    public MyExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData) {
-        this.mContext = context;
-        this.mListDataHeader = listDataHeader;
-        this.mListDataChild = listChildData;
+    public MyExpandableListAdapter(LayoutInflater context,
+                                   Map<String, List<String>> parentTitle,
+                                 Map<String, List<String>> dataCollection) {
+        this.context = context;
+        this.dataCollection = dataCollection;
+        this.parentTitle = parentTitle;
     }
 
-    @Override
-    public Object getChild(int groupPosition, int childPosititon) {
-        return this.mListDataChild.get(this.mListDataHeader.get(groupPosition))
-                .get(childPosititon);
+    public Object getChild(int groupPosition, int childPosition) {
+        return dataCollection.get(parentTitle.get("battingOrder").get(groupPosition)).get(
+                childPosition);
     }
 
-    @Override
     public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
 
-    @Override
-    public View getChildView(int groupPosition, final int childPosition,
-                             boolean isLastChild, View convertView, ViewGroup parent) {
-        return convertView;
+    public View getChildView(final int groupPosition,
+                             final int childPosition, boolean isLastChild, View convertView,
+                             ViewGroup parent) {
+
+        TextView textView = new TextView(context.getContext());
+        textView.setText(getChild(groupPosition, childPosition).toString());
+
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+        textView.setPadding(50, 7, 7, 7);
+
+        return textView;
     }
 
-    @Override
     public int getChildrenCount(int groupPosition) {
-        return this.mListDataChild.get(this.mListDataHeader.get(groupPosition))
-                .size();
+        Log.i("brad", parentTitle.get("battingOrder").get(groupPosition));
+        return dataCollection.get(parentTitle.get("battingOrder").get(groupPosition)).size();
     }
 
-    @Override
     public Object getGroup(int groupPosition) {
-        return this.mListDataHeader.get(groupPosition);
+        return parentTitle.get("battingOrder").get(groupPosition);
     }
 
-    @Override
+    public Object getGroupContext(int groupPosition) {
+        return parentTitle.get("batter").get(groupPosition);
+    }
+
     public int getGroupCount() {
-        return this.mListDataHeader.size();
+        return parentTitle.get("batter").size();
     }
 
-    @Override
     public long getGroupId(int groupPosition) {
         return groupPosition;
     }
 
-    @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        String headerTitle = (String) getGroup(groupPosition);
+        String childName = (String) getGroup(groupPosition);
+        String childContext = (String) getGroupContext(groupPosition);
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this.mContext
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.layout_roster, null);
+            LayoutInflater infalInflater = context;
+            convertView = infalInflater.inflate(R.layout.layout_parent_roster, null);
         }
-
-//        TextView lblListHeader = (TextView) convertView
-//                .findViewById(R.id.lblListHeader);
-//        lblListHeader.setTypeface(null, Typeface.BOLD);
-//        lblListHeader.setText(headerTitle);
-
+        TextView item = (TextView) convertView.findViewById(R.id.textView1);
+        TextView item2 = (TextView) convertView.findViewById(R.id.textViewSub);
+        item.setTypeface(null, Typeface.BOLD);
+        item.setText(childName);
+        item2.setTypeface(null, Typeface.BOLD);
+        item2.setText(childContext);
         return convertView;
     }
 
-    @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 
-    @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
 }
+
+
