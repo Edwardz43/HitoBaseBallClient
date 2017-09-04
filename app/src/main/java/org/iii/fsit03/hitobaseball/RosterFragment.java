@@ -60,7 +60,7 @@ public class RosterFragment extends Fragment {
         for (int i = 0; i < roster; i++) {
             batingOrder.add(""+(i + 1) + "棒");
             batter.add("");
-            Log.i("brad", "parent :" + batingOrder.size());
+            //Log.i("brad", "parent :" + batingOrder.size());
         }
         parentList_home.put("battingOrder", batingOrder);
         parentList_home.put("batter", batter);
@@ -70,7 +70,7 @@ public class RosterFragment extends Fragment {
         for (int i = 0; i < parentList_home.get("battingOrder").size(); i ++) {
             loadChild(players_home);
             parentListItems.put(parentList_home.get("battingOrder").get(i), childList);
-            Log.i("brad", "size : " + parentList_home.get("battingOrder").size());
+            //Log.i("brad", "size : " + parentList_home.get("battingOrder").size());
         }
 
         //set opp team list
@@ -79,7 +79,7 @@ public class RosterFragment extends Fragment {
         for (int i = 0; i < roster; i++) {
             batingOrder.add(""+(i + 1) + "棒");
             batter.add("");
-            Log.i("brad", "parent :" + batingOrder.size());
+            //Log.i("brad", "parent :" + batingOrder.size());
         }
         parentList_opp.put("battingOrder", batingOrder);
         parentList_opp.put("batter", batter);

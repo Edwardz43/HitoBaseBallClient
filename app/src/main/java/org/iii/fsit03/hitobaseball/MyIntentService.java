@@ -7,9 +7,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,8 +36,6 @@ public class MyIntentService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
 
         option = intent.getStringExtra("option");
-        String team = intent.getStringExtra("team");
-        Log.i("brad", ""+team);
         String target ="";
         switch (option){
             case "0":
@@ -46,6 +47,7 @@ public class MyIntentService extends IntentService {
                 String home = intent.getStringExtra("home");
                 String opp = intent.getStringExtra("opp");
                 option = "1&home=" + home + "&opp=" + opp;
+                Log.i("brad", home+":"+opp);
                 break;
         }
         ArrayList data = getData(option);
@@ -63,15 +65,17 @@ public class MyIntentService extends IntentService {
             url = new URL("http://10.0.2.2:8080/HitoBaseBall/ConnectToServer?option=" + option);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.connect();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    conn.getInputStream(), "UTF-8"));
-            String json = reader.readLine();
-            reader.close();
-            Gson gson = new Gson();
-            ArrayList tmp = (ArrayList)gson.fromJson(json,ArrayList.class);
+            ObjectInputStream oin = new ObjectInputStream(conn.getInputStream());
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(
+//                    oin, "UTF-8"));
+            String json = (String)oin.readObject();
+//            reader.close();
+            ArrayList array = new Gson().fromJson(json, ArrayList.class);
 
-            for(int i = 0; i < tmp.size(); i++){
-                data.add(tmp.get(i));
+
+
+            for(int i = 0; i < array.size(); i++){
+                data.add(array.get(i));
             }
             Log.i("brad", data.toString());
         }catch (Exception e){
